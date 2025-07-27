@@ -20,7 +20,7 @@ const getNotes = async (req, res) => {
 const createNotes = async (req, res) => {
   try {
     const noteData = req.body;
-    console.log(noteData)
+    console.log(noteData);
     const newNote = await notesModel.create(noteData);
     res.status(201).json({
       success: true,
@@ -35,7 +35,6 @@ const createNotes = async (req, res) => {
     });
   }
 };
-
 
 const updateNotes = async (req, res) => {
   try {
@@ -65,7 +64,6 @@ const updateNotes = async (req, res) => {
   }
 };
 
-
 const deleteNotes = async (req, res) => {
   try {
     const { id } = req.params;
@@ -87,4 +85,41 @@ const deleteNotes = async (req, res) => {
     res.status();
   }
 };
-module.exports = { getNotes, createNotes, updateNotes, deleteNotes };
+const getSummaryNotes = async (req, res) => {
+  try {
+    const dataGender = await notesModel.aggregate([
+      {
+        $group: {
+          _id: "$gender",
+          count: { $sum: 1 },
+        },
+      },
+    ]);
+    const jobType = await notesModel.aggregate([
+      {
+        $group: {
+          _id: "$jobType",
+          count: { $sum: 1 },
+        },
+      },
+    ]);
+    res.status(200).json({
+      success: true,
+      genderSummary: dataGender,
+      jobTypeSummary: jobType,
+    });
+  } catch (err) {
+    res.status(500).json({
+      success: false,
+      message: "Failed to fetch summary",
+      error: err.message,
+    });
+  }
+};
+module.exports = {
+  getNotes,
+  createNotes,
+  updateNotes,
+  deleteNotes,
+  getSummaryNotes,
+};
