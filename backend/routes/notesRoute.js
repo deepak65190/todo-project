@@ -4,9 +4,11 @@ const {
   createNotes,
   updateNotes,
   deleteNotes,
+  getSummaryNotes
 } = require("../controllers/notesController");
 const notesRouter = express.Router();
 notesRouter.get("/", getNotes);
+notesRouter.get("/summary", getSummaryNotes);
 notesRouter.post("/", createNotes);
 notesRouter.patch("/:id", updateNotes);
 notesRouter.delete("/:id", deleteNotes);
